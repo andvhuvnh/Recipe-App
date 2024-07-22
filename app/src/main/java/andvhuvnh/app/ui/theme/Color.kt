@@ -1,4 +1,4 @@
-package andvhuvnh.recipeapp.ui.theme
+package andvhuvnh.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

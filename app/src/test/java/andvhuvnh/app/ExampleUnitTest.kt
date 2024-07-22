@@ -1,4 +1,4 @@
-package andvhuvnh.recipeapp
+package andvhuvnh.app
 
 import org.junit.Test
 

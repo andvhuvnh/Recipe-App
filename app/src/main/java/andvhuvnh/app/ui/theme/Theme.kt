@@ -1,4 +1,4 @@
-package andvhuvnh.recipeapp.ui.theme
+package andvhuvnh.app.ui.theme
 
 import android.app.Activity
 import android.os.Build
