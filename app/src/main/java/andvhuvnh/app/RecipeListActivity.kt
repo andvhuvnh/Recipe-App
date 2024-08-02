@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import andvhuvnh.recipeapp.recipes.lib.RecipeRepository
+
 class RecipeListActivity : AppCompatActivity() {
     private lateinit var recipeListView: ListView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,5 +26,7 @@ class RecipeListActivity : AppCompatActivity() {
             intent.putExtra("RECIPE_ID", selectedRecipe.id)
             startActivity(intent)
         }
+
+
     }
 }
