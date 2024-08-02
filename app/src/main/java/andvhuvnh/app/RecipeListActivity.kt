@@ -2,6 +2,7 @@ package andvhuvnh.app
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +17,7 @@ class RecipeListActivity : AppCompatActivity() {
         val recipes = RecipeRepository.getRecipes()
         val recipeTitles = recipes.map { it.title }
         recipeListView = findViewById(R.id.recipeListView)
-
+        Log.d("RecipeListActivity", "Recipe Titles: $recipeTitles")
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, recipeTitles)
         recipeListView.adapter = adapter
 
