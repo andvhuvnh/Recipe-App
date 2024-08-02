@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "andvhuvnh.recipeapp"
+    namespace = "andvhuvnh.app"
     compileSdk = 34
 
     defaultConfig {

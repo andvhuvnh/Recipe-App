@@ -3,7 +3,6 @@ package andvhuvnh.app
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import andvhuvnh.recipeapp.R
 import andvhuvnh.recipeapp.recipes.lib.RecipeRepository
 
 class RecipeDetailActivity : AppCompatActivity() {

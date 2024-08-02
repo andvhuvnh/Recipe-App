@@ -5,7 +5,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import andvhuvnh.recipeapp.R
 import andvhuvnh.recipeapp.recipes.lib.Recipe
 import andvhuvnh.recipeapp.recipes.lib.RecipeRepository
 import java.util.UUID
