@@ -17,11 +17,13 @@
         android:id="@+id/ingredientsTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="18sp"
         android:padding="8dp"/>
 
     <TextView
         android:id="@+id/instructionsTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="18sp"
         android:padding="8dp"/>
 </LinearLayout>

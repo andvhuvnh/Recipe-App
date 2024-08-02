@@ -11,12 +11,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RecipeApp">
 
-        <activity android:name=".CreateRecipeActivity" />
-        <activity android:name=".RecipeListActivity" />
-        <activity android:name=".RecipeDetailActivity" />
+        <activity android:name=".CreateRecipeActivity"
+            android:theme="@style/Theme.RecipeApp"/>
+        <activity android:name=".RecipeListActivity"
+            android:theme="@style/Theme.RecipeApp"/>
+        <activity android:name=".RecipeDetailActivity"
+            android:theme="@style/Theme.RecipeApp"/>
+
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.RecipeApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

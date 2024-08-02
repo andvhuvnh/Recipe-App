@@ -25,8 +25,8 @@ class CreateRecipeActivity : AppCompatActivity() {
 
         saveButton.setOnClickListener{
             val title = titleEditText.text.toString()
-            val ingredients = titleEditText.text.toString()
-            val instructions = titleEditText.text.toString()
+            val ingredients = ingredientsEditText.text.toString()
+            val instructions = instructionsEditText.text.toString()
 
             if (title.isNotEmpty() && ingredients.isNotEmpty() && instructions.isNotEmpty()) {
                 val recipe = Recipe(UUID.randomUUID().toString(), title, ingredients, instructions)
