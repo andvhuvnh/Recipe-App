@@ -3,9 +3,9 @@ package andvhuvnh.app
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private lateinit var createRecipeButton: Button
     private lateinit var viewRecipesButton: Button
 
