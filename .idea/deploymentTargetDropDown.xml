@@ -11,6 +11,9 @@
       <entry key="lib">
         <State />
       </entry>
+      <entry key="testGetId()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
