@@ -1,17 +1,16 @@
 package andvhuvnh.recipeapp.recipes.lib
 
-object RecipeRepository {
-    private val recipes = mutableListOf<Recipe>()
+class RecipeRepository(private val recipeDao: RecipeDao) {
 
-    fun addRecipe(recipe: Recipe){
-        recipes.add(recipe)
+    suspend fun addRecipe(recipe: Recipe){
+        recipeDao.insert(recipe)
     }
 
-    fun getRecipes(): List<Recipe>{
-        return recipes
+    suspend fun getRecipeById(id: String): Recipe?{
+        return recipeDao.getRecipeById(id)
     }
 
-    fun getRecipeById(id: String): Recipe? {
-        return recipes.find {it.id == id }
+    suspend fun getAllRecipes():List<Recipe> {
+        return recipeDao.getAllRecipes()
     }
 }

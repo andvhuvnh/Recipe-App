@@ -3,7 +3,11 @@ package andvhuvnh.app
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import andvhuvnh.recipeapp.recipes.lib.RecipeRepository
+import andvhuvnh.recipeapp.recipes.lib.Recipe
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RecipeDetailActivity : AppCompatActivity() {
     private lateinit var titleTextView: TextView
@@ -19,12 +23,28 @@ class RecipeDetailActivity : AppCompatActivity() {
         instructionsTextView = findViewById(R.id.instructionsTextView)
 
         val recipeId = intent.getStringExtra("RECIPE_ID")
-        val recipe = RecipeRepository.getRecipeById(recipeId!!)
-
-        recipe?.let{
-            titleTextView.text = it.title
-            ingredientsTextView.text= it.ingredients
-            instructionsTextView.text = it.instructions
+        if (recipeId != null){
+            fetchRecipeDetails(recipeId)
         }
+    }
+
+    private fun fetchRecipeDetails(recipeId: String) {
+        val recipeDatabase = (application as RecipeApp).database
+        val recipeDao = recipeDatabase.recipeDao()
+
+        CoroutineScope(Dispatchers.IO).launch{
+            val recipe = recipeDao.getRecipeById(recipeId)
+            withContext(Dispatchers.Main){
+                recipe?.let {
+                    displayRecipeDetails(it)
+                }
+            }
+        }
+    }
+
+    private fun displayRecipeDetails(recipe: Recipe) {
+        titleTextView.text = recipe.title
+        ingredientsTextView.text = recipe.ingredients
+        instructionsTextView.text = recipe.instructions
     }
 }

@@ -6,7 +6,9 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import andvhuvnh.recipeapp.recipes.lib.Recipe
-import andvhuvnh.recipeapp.recipes.lib.RecipeRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.UUID
 class CreateRecipeActivity : AppCompatActivity() {
     private lateinit var titleEditText: EditText
@@ -30,12 +32,24 @@ class CreateRecipeActivity : AppCompatActivity() {
 
             if (title.isNotEmpty() && ingredients.isNotEmpty() && instructions.isNotEmpty()) {
                 val recipe = Recipe(UUID.randomUUID().toString(), title, ingredients, instructions)
-                RecipeRepository.addRecipe(recipe)
-                Toast.makeText(this, "Recipe added successfully", Toast.LENGTH_SHORT).show()
-                finish()
+                saveRecipe(recipe)
             } else {
                 Toast.makeText(this,"Please fill out all fields", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun saveRecipe(recipe: Recipe) {
+        val recipeDatabase = (application as RecipeApp).database
+        val recipeDao = recipeDatabase.recipeDao()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            recipeDao.insert(recipe)
+            runOnUiThread {
+                Toast.makeText(this@CreateRecipeActivity, "Recipe added successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
+        Toast.makeText(this, "Recipe added successfully", Toast.LENGTH_SHORT).show()
+        finish()
     }
 }
