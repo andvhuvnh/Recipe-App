@@ -5,4 +5,10 @@
     <string name="ingredients">Ingredients</string>
     <string name="create_recipe">Create Recipe</string>
     <string name="view_recipes">View Recipes</string>
+    <string name="add_ingredients">Add Ingredients</string>
+    <string name="instructions">Instructions</string>
+    <string name="add_instruction">Add Instruction</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="delete_recipe">Delete recipe</string>
 </resources>

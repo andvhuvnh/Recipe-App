@@ -1,9 +1,9 @@
 package andvhuvnh.recipeapp.recipes.lib
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import andvhuvnh.recipeapp.recipes.lib.Recipe
 
 @Dao
 interface RecipeDao{
@@ -15,4 +15,7 @@ interface RecipeDao{
 
     @Query("SELECT * FROM recipes")
     suspend fun getAllRecipes(): List<Recipe>
+
+    @Delete
+    suspend fun delete(recipe: Recipe)
 }
