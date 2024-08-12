@@ -3,8 +3,8 @@ package andvhuvnh.app
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import andvhuvnh.recipeapp.recipes.lib.Recipe
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,10 +32,10 @@ class RecipeDetailActivity : AppCompatActivity() {
         val recipeDatabase = (application as RecipeApp).database
         val recipeDao = recipeDatabase.recipeDao()
 
-        CoroutineScope(Dispatchers.IO).launch{
-            val recipe = recipeDao.getRecipeById(recipeId)
-            withContext(Dispatchers.Main){
-                recipe?.let {
+        lifecycleScope.launch(Dispatchers.IO){
+            val recipe: Recipe? = recipeDao.getRecipeById(recipeId)
+            recipe?.let {
+                withContext(Dispatchers.Main){
                     displayRecipeDetails(it)
                 }
             }
@@ -44,7 +44,7 @@ class RecipeDetailActivity : AppCompatActivity() {
 
     private fun displayRecipeDetails(recipe: Recipe) {
         titleTextView.text = recipe.title
-        ingredientsTextView.text = recipe.ingredients
-        instructionsTextView.text = recipe.instructions
+        ingredientsTextView.text = recipe.ingredients.joinToString(separator="\n" )
+        instructionsTextView.text = recipe.instructions.joinToString(separator="\n" )
     }
 }
