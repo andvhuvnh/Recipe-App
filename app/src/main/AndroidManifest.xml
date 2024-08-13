@@ -18,6 +18,8 @@
             android:theme="@style/Theme.RecipeApp"/>
         <activity android:name=".RecipeDetailActivity"
             android:theme="@style/Theme.RecipeApp"/>
+        <activity android:name=".EditRecipeActivity"
+            android:theme="@style/Theme.RecipeApp"/>
 
         <activity
             android:name=".MainActivity"

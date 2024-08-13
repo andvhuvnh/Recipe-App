@@ -11,4 +11,7 @@
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="delete_recipe">Delete recipe</string>
+    <string name="ingredients_one_per_line">Ingredients (One per line)</string>
+    <string name="instructions_one_per_line">Instructions (One per line)</string>
+    <string name="edit">Edit</string>
 </resources>
