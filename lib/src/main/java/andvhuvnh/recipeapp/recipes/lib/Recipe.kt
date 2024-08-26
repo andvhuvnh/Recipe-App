@@ -4,12 +4,14 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 
 @Entity(tableName = "recipes")
-class Recipe(
-    @PrimaryKey val id: String,
-    val title: String,
-    val ingredients: List<String>,
-    val instructions: List<String>
-    )
+data class Recipe(
+    @PrimaryKey val id: String ="",
+    val title: String = "",
+    val ingredients: List<String> = emptyList(),
+    val instructions: List<String> = emptyList()
+    ) {
+
+}
 
 class RecipeTypeConverters{
     @TypeConverter

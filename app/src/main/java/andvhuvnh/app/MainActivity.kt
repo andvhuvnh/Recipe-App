@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     private lateinit var createRecipeButton: Button
@@ -22,5 +23,12 @@ class MainActivity : AppCompatActivity() {
         viewRecipesButton.setOnClickListener {
             startActivity(Intent(this,RecipeListActivity::class.java))
         }
+    }
+
+    private fun logout(){
+        FirebaseAuth.getInstance().signOut()
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

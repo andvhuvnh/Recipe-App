@@ -3,18 +3,22 @@ package andvhuvnh.app
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import andvhuvnh.recipeapp.recipes.lib.Recipe
-import kotlinx.coroutines.launch
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class RecipeListActivity : AppCompatActivity() {
     private lateinit var recipeListView: ListView
     private val recipeList = mutableListOf<Recipe>()
     private lateinit var recipeAdapter: RecipeAdapter
+    private lateinit var addRecipeButton: Button
 
+    private var firestore = FirebaseFirestore.getInstance()
+    private var currentUser = FirebaseAuth.getInstance().currentUser
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recipe_list)
@@ -22,6 +26,7 @@ class RecipeListActivity : AppCompatActivity() {
         recipeListView = findViewById(R.id.recipeListView)
         recipeAdapter = RecipeAdapter(this, recipeList)
         recipeListView.adapter = recipeAdapter
+        addRecipeButton = findViewById(R.id.addRecipeButton)
 
         loadRecipes()
 
@@ -34,16 +39,30 @@ class RecipeListActivity : AppCompatActivity() {
             intent.putExtra("RECIPE_ID", selectedRecipe.id)
             startActivity(intent)
         }
+
+        addRecipeButton.setOnClickListener {
+            val intent = Intent(this, CreateRecipeActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun loadRecipes() {
-        val recipeDao = (application as RecipeApp).database.recipeDao()
-
-        lifecycleScope.launch {
-            val recipes = recipeDao.getAllRecipes()
-            recipeList.clear()
-            recipeList.addAll(recipes)
-            recipeAdapter.notifyDataSetChanged()
+        currentUser?.let {user ->
+            firestore.collection("users")
+                .document(user.uid)
+                .collection("recipes")
+                .get()
+                .addOnSuccessListener { result ->
+                    recipeList.clear()
+                    for(document in result){
+                        val recipe = document.toObject(Recipe::class.java)
+                        recipeList.add(recipe)
+                    }
+                    recipeAdapter.notifyDataSetChanged()
+                }
+                .addOnFailureListener{ e ->
+                    Toast.makeText(this,"Failed to load recipes : ${e.message}", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 }

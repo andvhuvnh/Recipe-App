@@ -11,6 +11,9 @@ interface RecipeDao{
     @Insert
     suspend fun insert(recipe: Recipe)
 
+    @Insert
+    suspend fun insertAll(recipes:List<Recipe>)
+
     @Query("SELECT * FROM recipes WHERE id = :id")
     suspend fun getRecipeById(id: String): Recipe?
 
@@ -22,4 +25,7 @@ interface RecipeDao{
 
     @Update
     suspend fun update(recipe: Recipe)
+
+    @Query("DELETE FROM recipes")
+    suspend fun deleteAll()
 }
