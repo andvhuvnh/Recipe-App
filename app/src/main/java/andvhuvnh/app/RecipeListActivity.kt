@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import andvhuvnh.recipeapp.recipes.lib.Recipe
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 
 class RecipeListActivity : AppCompatActivity() {
@@ -28,7 +29,7 @@ class RecipeListActivity : AppCompatActivity() {
         recipeListView.adapter = recipeAdapter
         addRecipeButton = findViewById(R.id.addRecipeButton)
 
-        loadRecipes()
+        listenForRecipeUpdates()
 
         recipeListView.setOnItemClickListener{_,_, position, _ ->
             val selectedRecipe = recipeList[position]
@@ -46,22 +47,41 @@ class RecipeListActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadRecipes() {
+    private fun listenForRecipeUpdates() {
         currentUser?.let {user ->
             firestore.collection("users")
                 .document(user.uid)
                 .collection("recipes")
-                .get()
-                .addOnSuccessListener { result ->
-                    recipeList.clear()
-                    for(document in result){
-                        val recipe = document.toObject(Recipe::class.java)
-                        recipeList.add(recipe)
+                .addSnapshotListener { snapshots, e ->
+                    if (e != null) {
+                        Log.w("RecipeListActivity", "Listen failed", e)
+                        return@addSnapshotListener
                     }
-                    recipeAdapter.notifyDataSetChanged()
-                }
-                .addOnFailureListener{ e ->
-                    Toast.makeText(this,"Failed to load recipes : ${e.message}", Toast.LENGTH_SHORT).show()
+                    for (dc in snapshots?.documentChanges!!){
+                        when (dc.type){
+                            DocumentChange.Type.ADDED->{
+                                val recipe = dc.document.toObject(Recipe::class.java)
+                                recipeList.add(recipe)
+                                recipeAdapter.notifyDataSetChanged()
+                            }
+                            DocumentChange.Type.MODIFIED->{
+                                val recipe = dc.document.toObject(Recipe::class.java)
+                                val index = recipeList.indexOfFirst {it.id == recipe.id}
+                                if (index != -1){
+                                    recipeList[index] = recipe
+                                    recipeAdapter.notifyDataSetChanged()
+                                }
+                            }
+                            DocumentChange.Type.REMOVED ->{
+                                val recipe = dc.document.toObject(Recipe::class.java)
+                                val index = recipeList.indexOfFirst { it.id == recipe.id }
+                                if (index != -1) {
+                                    recipeList.removeAt(index)
+                                    recipeAdapter.notifyDataSetChanged()
+                                }
+                            }
+                        }
+                    }
                 }
         }
     }

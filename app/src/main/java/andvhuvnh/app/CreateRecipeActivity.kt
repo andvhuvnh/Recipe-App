@@ -1,5 +1,6 @@
 package andvhuvnh.app
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -46,6 +47,9 @@ class CreateRecipeActivity : AppCompatActivity() {
 
         saveButton.setOnClickListener {
             saveRecipe()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 
