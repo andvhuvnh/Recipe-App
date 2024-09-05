@@ -17,6 +17,7 @@ class RecipeListActivity : AppCompatActivity() {
     private val recipeList = mutableListOf<Recipe>()
     private lateinit var recipeAdapter: RecipeAdapter
     private lateinit var addRecipeButton: Button
+    private lateinit var homeButton: Button
 
     private var firestore = FirebaseFirestore.getInstance()
     private var currentUser = FirebaseAuth.getInstance().currentUser
@@ -28,6 +29,7 @@ class RecipeListActivity : AppCompatActivity() {
         recipeAdapter = RecipeAdapter(this, recipeList)
         recipeListView.adapter = recipeAdapter
         addRecipeButton = findViewById(R.id.addRecipeButton)
+        homeButton = findViewById(R.id.homeButton)
 
         listenForRecipeUpdates()
 
@@ -43,6 +45,11 @@ class RecipeListActivity : AppCompatActivity() {
 
         addRecipeButton.setOnClickListener {
             val intent = Intent(this, CreateRecipeActivity::class.java)
+            startActivity(intent)
+        }
+
+        homeButton.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
     }
@@ -83,6 +90,16 @@ class RecipeListActivity : AppCompatActivity() {
                         }
                     }
                 }
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
         }
     }
 }

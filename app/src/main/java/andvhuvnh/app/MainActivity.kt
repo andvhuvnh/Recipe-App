@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : AppCompatActivity() {
     private lateinit var createRecipeButton: Button
     private lateinit var viewRecipesButton: Button
+    private lateinit var logoutButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,6 +17,8 @@ class MainActivity : AppCompatActivity() {
 
         createRecipeButton = findViewById(R.id.createRecipeButton)
         viewRecipesButton = findViewById(R.id.viewRecipesButton)
+        logoutButton = findViewById(R.id.logoutButton)
+
         createRecipeButton.setOnClickListener{
             startActivity(Intent(this, CreateRecipeActivity::class.java))
         }
@@ -23,11 +26,17 @@ class MainActivity : AppCompatActivity() {
         viewRecipesButton.setOnClickListener {
             startActivity(Intent(this,RecipeListActivity::class.java))
         }
+
+        logoutButton.setOnClickListener {
+            logout()
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
     }
 
     private fun logout(){
         FirebaseAuth.getInstance().signOut()
         val intent = Intent(this, LoginActivity::class.java)
+        Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
         finish()
     }
