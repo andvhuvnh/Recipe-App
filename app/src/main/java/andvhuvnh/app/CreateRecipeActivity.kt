@@ -1,5 +1,6 @@
 package andvhuvnh.app
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -7,9 +8,8 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import andvhuvnh.recipeapp.recipes.lib.Recipe
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.UUID
 
 class CreateRecipeActivity : AppCompatActivity() {
@@ -20,6 +20,8 @@ class CreateRecipeActivity : AppCompatActivity() {
     private lateinit var addInstructionButton: Button
     private lateinit var saveButton: Button
 
+    private val firestore = FirebaseFirestore.getInstance()
+    private val currentUser = FirebaseAuth.getInstance().currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +47,9 @@ class CreateRecipeActivity : AppCompatActivity() {
 
         saveButton.setOnClickListener {
             saveRecipe()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 
@@ -76,19 +81,36 @@ class CreateRecipeActivity : AppCompatActivity() {
 
         if (title.isNotEmpty()&& ingredients.isNotEmpty() && instructions.isNotEmpty()){
             val recipe = Recipe(UUID.randomUUID().toString(), title, ingredients, instructions)
-            val recipeDatabase = (application as RecipeApp).database
-            val recipeDao = recipeDatabase.recipeDao()
 
-            GlobalScope.launch(Dispatchers.IO) {
-                recipeDao.insert(recipe)
+            currentUser?.let {user ->
+                firestore.collection("users")
+                    .document(user.uid)
+                    .collection("recipes")
+                    .document(recipe.id)
+                    .set(recipe)
+                    .addOnSuccessListener {
+                        Toast.makeText(this,"Recipe added successfully", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                    .addOnFailureListener{ e ->
+                        Toast.makeText(this, "Error adding recipe: ${e.message}",Toast.LENGTH_SHORT).show()
+                    }
+            } ?:run{
+                Toast.makeText(this,"User not authenticated", Toast.LENGTH_SHORT).show()
             }
 
-            Toast.makeText(this, "Recipe added successfully", Toast.LENGTH_SHORT).show()
-            finish()
         } else{
             Toast.makeText(this, "Please fill out all fields!", Toast.LENGTH_SHORT).show()
         }
-
-
+    }
+    override fun onResume() {
+        super.onResume()
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
     }
 }

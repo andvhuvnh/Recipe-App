@@ -14,4 +14,13 @@
     <string name="ingredients_one_per_line">Ingredients (One per line)</string>
     <string name="instructions_one_per_line">Instructions (One per line)</string>
     <string name="edit">Edit</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_an_account_sign_up_here">Don\'t have an account? Sign up here</string>
+    <string name="already_have_an_account_login_here">Already have an account? Login here</string>
+    <string name="home">Home</string>
+    <string name="add_recipe">Add Recipe</string>
+    <string name="logout">Logout</string>
 </resources>

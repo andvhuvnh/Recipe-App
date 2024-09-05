@@ -5,11 +5,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import andvhuvnh.recipeapp.recipes.lib.Recipe
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class EditRecipeActivity : AppCompatActivity() {
     private lateinit var titleEditText: EditText
@@ -18,6 +16,8 @@ class EditRecipeActivity : AppCompatActivity() {
     private lateinit var saveButton: Button
 
     private var recipeId: String? = null
+    private val firestore = FirebaseFirestore.getInstance()
+    private val currentUser = FirebaseAuth.getInstance().currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +29,7 @@ class EditRecipeActivity : AppCompatActivity() {
         saveButton = findViewById(R.id.saveButton)
 
         recipeId = intent.getStringExtra("RECIPE_ID")
-        if(recipeId != null){
+        if (recipeId != null) {
             loadRecipeDetails(recipeId!!)
         }
 
@@ -45,16 +45,21 @@ class EditRecipeActivity : AppCompatActivity() {
 
         if (title.isNotEmpty() && ingredients.isNotEmpty() && instructions.isNotEmpty()) {
             val recipe = Recipe(recipeId!!, title, ingredients, instructions)
-            val recipeDatabase = (application as RecipeApp).database
-            val recipeDao = recipeDatabase.recipeDao()
 
-            lifecycleScope.launch(Dispatchers.IO) {
-                recipeDao.update(recipe)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@EditRecipeActivity, "Recipe updated successfully", Toast.LENGTH_SHORT).show()
-                    setResult(RESULT_OK)
-                    finish()
-                }
+            currentUser?.let{user ->
+                firestore.collection("users")
+                    .document(user.uid)
+                    .collection("recipes")
+                    .document(recipeId!!)
+                    .set(recipe)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Recipe updated Successfully", Toast.LENGTH_SHORT).show()
+                        setResult(RESULT_OK)
+                        finish()
+                    }
+                    .addOnFailureListener{ e ->
+                        Toast.makeText(this, "Error updating Recipe: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
             }
         } else {
             Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show()
@@ -62,18 +67,23 @@ class EditRecipeActivity : AppCompatActivity() {
     }
 
     private fun loadRecipeDetails(recipeId: String) {
-        val recipeDatabase = (application as RecipeApp).database
-        val recipeDao = recipeDatabase.recipeDao()
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val recipe: Recipe? = recipeDao.getRecipeById(recipeId)
-            recipe?.let {
-                withContext(Dispatchers.Main) {
-                    titleEditText.setText(it.title)
-                    ingredientsEditText.setText(it.ingredients.joinToString("\n"))
-                    instructionsEditText.setText(it.instructions.joinToString("\n"))
-                }
-            }
-        }
+       currentUser?.let{user ->
+           firestore.collection("users")
+               .document(user.uid)
+               .collection("recipes")
+               .document(recipeId)
+               .get()
+               .addOnSuccessListener { document ->
+                   val recipe = document.toObject(Recipe::class.java)
+                   recipe?.let{
+                       titleEditText.setText(it.title)
+                       ingredientsEditText.setText(it.ingredients.joinToString("\n"))
+                       instructionsEditText.setText(it.instructions.joinToString("\n"))
+                   }
+               }
+               .addOnFailureListener{ e ->
+                   Toast.makeText(this, "Error loading Recipe", Toast.LENGTH_SHORT).show()
+               }
+       }
     }
 }

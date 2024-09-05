@@ -5,11 +5,9 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import andvhuvnh.recipeapp.recipes.lib.Recipe
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class RecipeDetailActivity : AppCompatActivity() {
     private lateinit var titleTextView: TextView
@@ -17,6 +15,8 @@ class RecipeDetailActivity : AppCompatActivity() {
     private lateinit var instructionsTextView: TextView
     private lateinit var editButton: Button
     private var recipeId: String? = null
+    private var firestore = FirebaseFirestore.getInstance()
+    private var currentUser = FirebaseAuth.getInstance().currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,17 +41,20 @@ class RecipeDetailActivity : AppCompatActivity() {
     }
 
     private fun fetchRecipeDetails(recipeId: String) {
-        val recipeDatabase = (application as RecipeApp).database
-        val recipeDao = recipeDatabase.recipeDao()
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val recipe: Recipe? = recipeDao.getRecipeById(recipeId)
-            recipe?.let {
-                withContext(Dispatchers.Main) {
-                    displayRecipeDetails(it)
+        currentUser?.let{user ->
+            firestore.collection("users")
+                .document(user.uid)
+                .collection("recipes")
+                .document(recipeId)
+                .get()
+                .addOnSuccessListener { document ->
+                    val recipe = document.toObject(Recipe::class.java)
+                    recipe?.let {
+                        displayRecipeDetails(it)
+                    }
                 }
-            }
-        }
+                .addOnFailureListener { e ->
+                }}
     }
 
     private fun displayRecipeDetails(recipe: Recipe) {
