@@ -23,4 +23,6 @@
     <string name="home">Home</string>
     <string name="add_recipe">Add Recipe</string>
     <string name="logout">Logout</string>
+    <string name="recipe_image">Recipe Image</string>
+    <string name="upload_image">Upload Image</string>
 </resources>

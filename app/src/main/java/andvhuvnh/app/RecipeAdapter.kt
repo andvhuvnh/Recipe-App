@@ -8,9 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import andvhuvnh.recipeapp.recipes.lib.Recipe
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -28,8 +30,13 @@ class RecipeAdapter (
 
         val recipeTitleTextView = view.findViewById<TextView>(R.id.recipeTitleTextView)
         val deleteButton = view.findViewById<ImageButton>(R.id.deleteButton)
+        val recipeImageView = view.findViewById<ImageView>(R.id.recipeImageView)
 
         recipeTitleTextView.text = recipe.title
+
+        Glide.with(context)
+            .load(recipe.imageUrl)
+            .into(recipeImageView)
 
         deleteButton.setOnClickListener {
             showDeleteConfirmationDialog(recipe, recipe.id)

@@ -10,7 +10,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/recipe_title"
-        android:inputType="textCapSentences"/>
+        android:inputType="textCapSentences"
+        android:autofillHints=""/>
+
+    <ImageView
+        android:id="@+id/recipeImageView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:contentDescription="@string/recipe_image"
+        android:scaleType="centerCrop"
+        />
+
+    <Button
+        android:id="@+id/uploadImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/upload_image" />
 
     <EditText
         android:layout_width="match_parent"
@@ -21,6 +36,7 @@
         android:layout_marginTop="16dp"
         android:minLines="5"
         android:inputType="textMultiLine|textCapSentences"
+        android:autofillHints=""
         />
 
     <EditText
@@ -32,6 +48,7 @@
         android:layout_marginTop="16dp"
         android:minLines="5"
         android:inputType="textMultiLine|textCapSentences"
+        android:autofillHints=""
         />
 
     <Button
